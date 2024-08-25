@@ -1,4 +1,4 @@
-package Logger;
+package logger;
 
 public class Log {
 
@@ -6,7 +6,7 @@ public class Log {
     public enum Level {
         INFO, WARNING, ERROR, DEBUG, SUCCESS
     }
-    
+
     private static void log(Level level, String message) {
         System.out.println("[" + level + "] " + message);
     }

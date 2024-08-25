@@ -17,6 +17,11 @@ public class Queries {
     public static final String USE_DB = "USE %s";
 
     /**
+     * @description Query select generica
+     */
+    public static final String GENERIC_QUERY_SELECT = "SELECT * FROM %s";
+
+    /**
      * @description Query di creazione tabella tbl_cliente
      */
     public static final String TBL_USER_CREATE_QUERY_TABLE = "CREATE TABLE IF NOT EXISTS Cliente (" +

@@ -41,4 +41,38 @@ public class Constants {
     public static final String SQL_DRIVER_JDBC_NOT_FOUND = "Driver JDBC non trovato!";
     public static final String SQL_CONNECTION_CLOSING_RESOURCES_ERROR = "Errore durante la chiusura delle risorse!";
     public static final String SQL_CREATION_TABLE_ERROR = "Errore durante la crezione della tabella %s !";
+
+    /**
+     * @description Costanti di server e client socket
+     */
+    public static final String SERVER_SOCKET_CONNECTION_ESTABLISHED = "Server avviato sulla porta %s";
+    public static final String SERVER_LISTENING = "Server in ascolto...";
+    public static final String CLIENT_SOCKET_CONNECTION_ESTABLISHED = "Client in ascolto sulla porta %s";
+
+    /**
+     * @description Server/Client socket configurations
+     */
+    public static final String HOSTNAME = "localhost";
+    public static final Integer TICKETING_SERVER_PORT = 8080;
+    public static final Integer DIPENDENTE_CLIENT_PORT = 8080;
+
+    /**
+     * @description Choices
+     */
+    public static final String VIEW_TICKETS = "VIEW_TICKETS";
+    public static final String AVAILABLE_TICKETS = "Tickets disponibili:";
+    public static final String ON_CLOSING_CLIENT_MESSAGE = "Chiusura del client...";
+    public static final String WRONG_CHOICE = "Scelta non valida. Riprovare.";
+
+    /**
+     * @description Dipendente Client decisions
+     */
+    public static final String CHOOSE = "Scegli un'operazione";
+    public static final String INSERT_NEW_TICKET = "1. Inserisci un nuovo ticket";
+    public static final String SHOW_TICKETS = "2. Visualizza tutti i ticket";
+    public static final String DELETE_TICKET = "3. Elimina ticket";
+    public static final String EXIT = "4. Esci";
+    public static final String CHOICE = "Scelta...  ";
+    public static final String UNKNOWN_REQUEST = "Richiesta sconosciuta";
+
 }

@@ -1,6 +1,6 @@
-package Singleton;
+package singleton;
 
-import Logger.Log;
+import logger.Log;
 import utils.Constants;
 import utils.Queries;
 import utils.Utils;
