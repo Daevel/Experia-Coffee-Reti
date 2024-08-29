@@ -22,18 +22,6 @@ public class Queries {
     public static final String GENERIC_QUERY_SELECT = "SELECT * FROM %s";
 
     /**
-     * @description Query di creazione tabella tbl_cliente
-     */
-    public static final String TBL_USER_CREATE_QUERY_TABLE = "CREATE TABLE IF NOT EXISTS Cliente (" +
-            "id INT AUTO_INCREMENT PRIMARY KEY, " +
-            "nome VARCHAR(50) NOT NULL, " +
-            "cognome VARCHAR(50) NOT NULL, " +
-            "email VARCHAR(100) NOT NULL UNIQUE, " +
-            "telefono VARCHAR(20), " +
-            "data_registrazione TIMESTAMP DEFAULT CURRENT_TIMESTAMP" +
-            ")";
-
-    /**
      * @description Query di creazione tabella tbl_dipendente
      */
     public static final String TBL_EMPLOYEE_CREATE_QUERY_TABLE = "CREATE TABLE IF NOT EXISTS Dipendente (\n" +
@@ -67,6 +55,12 @@ public class Queries {
             "    DATA_CREAZIONE DATE NOT NULL,\n" +
             "    STATO VARCHAR(50) DEFAULT 'Non gestito'\n" +
             ");";
+
+    public static final String TBL_TICKETING_SELECT_STATUSES_QUERY = "SELECT ID,STATO FROM Ticketing;";
+
+    public static final String TBL_TICKETING_DELETE_TICKET_BY_ID_QUERY = "DELETE FROM Ticketing WHERE ID = ?";
+
+    public static final String TBL_TICKETING_INSERT_NEW_TICKET_BY_QUERY = "INSERT INTO " + Constants.TBL_TICKETING + " (TITOLO, DESCRIZIONE, STATO, DATA_CREAZIONE) VALUES (?, ?, ?, ?)";
 
     /**
      * @description Query di creazione tabella Filiale

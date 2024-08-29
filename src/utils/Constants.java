@@ -1,6 +1,10 @@
 package utils;
 
 public class Constants {
+
+    public static final String SUCCESS = "SUCCESS";
+    public static final String FAILURE = "FAILURE";
+    
     /**
      * @description DATABASE TABLES NAMES
      */
@@ -60,6 +64,7 @@ public class Constants {
      * @description Choices
      */
     public static final String VIEW_TICKETS = "VIEW_TICKETS";
+    public static final String VIEW_TICKETS_STATUSES = "VIEW_TICKETS_STATUSES";
     public static final String AVAILABLE_TICKETS = "Tickets disponibili:";
     public static final String ON_CLOSING_CLIENT_MESSAGE = "Chiusura del client...";
     public static final String WRONG_CHOICE = "Scelta non valida. Riprovare.";
@@ -70,8 +75,9 @@ public class Constants {
     public static final String CHOOSE = "Scegli un'operazione";
     public static final String INSERT_NEW_TICKET = "1. Inserisci un nuovo ticket";
     public static final String SHOW_TICKETS = "2. Visualizza tutti i ticket";
-    public static final String DELETE_TICKET = "3. Elimina ticket";
-    public static final String EXIT = "4. Esci";
+    public static final String SHOW_TICKETS_STATUSES = "3. Visualizza gli stati dei vari ticket";
+    public static final String DELETE_TICKET = "4. Elimina ticket";
+    public static final String EXIT = "5. Esci";
     public static final String CHOICE = "Scelta...  ";
     public static final String UNKNOWN_REQUEST = "Richiesta sconosciuta";
 

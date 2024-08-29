@@ -52,6 +52,34 @@ public class TicketingServer {
                 if (request.equals(Constants.VIEW_TICKETS)) {
                     List<String> tickets = viewTickets();
                     output.writeObject(tickets);
+                } else if (request.equals(Constants.VIEW_TICKETS_STATUSES)) {
+                    List<String> ticketStatuses = viewTicketStatuses();
+                    output.writeObject(ticketStatuses);
+                } else if (request.equals(Constants.DELETE_TICKET)) {
+                    int ticketId = (int) input.readObject();
+                    boolean deleted = deleteTicket(ticketId);
+                    if (deleted) {
+                        output.writeObject(Constants.SUCCESS);
+                        Log.info(String.format("Ticket con ID %d cancellato con successo.", ticketId));
+                    } else {
+                        output.writeObject(Constants.FAILURE);
+                        Log.warning(String.format("Cancellazione fallita per il ticket con ID %d.", ticketId));
+                    }
+                } else if (request.equals(Constants.INSERT_NEW_TICKET)) {
+                    String ticketTitle = (String) input.readObject();
+                    String ticketDescription = (String) input.readObject();
+                    String ticketStatus = (String) input.readObject();
+                    Date ticketCreatedDate = (Date) input.readObject();
+                    boolean inserted = insertNewTicket(ticketTitle, ticketDescription, ticketStatus, ticketCreatedDate);
+                    if (inserted) {
+                        output.writeObject(Constants.SUCCESS);
+                        Log.info("Ticket con ID %d inserito con successo.");
+                    } else {
+                        output.writeObject(Constants.FAILURE);
+                        Log.warning("Inserimento fallito del ticket.");
+                    }
+                } else if (request.equals(Constants.EXIT)) {
+                    clientSocket.close();
                 } else {
                     output.writeObject(Constants.UNKNOWN_REQUEST);
                 }
@@ -61,19 +89,13 @@ public class TicketingServer {
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
-            } finally {
-                try {
-                    clientSocket.close();
-                } catch (IOException e) {
-                    try {
-                        throw new IOException(e);
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                }
             }
         }
 
+        /**
+         * @throws SQLException
+         * @description funzione la quale mostra tutti i ticket disponibili
+         */
         private List<String> viewTickets() throws SQLException {
 
             Connection connection = null;
@@ -97,7 +119,7 @@ public class TicketingServer {
 
                     // Costruisci una rappresentazione leggibile del ticket
                     String ticket = String.format("ID: %d, Titolo: %s, Descrizione: %s, Gestito da: %s, Creato da: %s, Data creazione: %s, Stato: %s",
-                            id, titolo, descrizione, gestitoDa != null ? gestitoDa : "Non assegnato", creatoDa != null ? creatoDa : "Anonimo", dataCreazione, stato);
+                            id, titolo, descrizione, gestitoDa != null ? gestitoDa : "Non asegnato", creatoDa != null ? creatoDa : "Anonimo", dataCreazione, stato);
 
                     tickets.add(ticket);
                 }
@@ -105,6 +127,81 @@ public class TicketingServer {
                 Database.closeConnection(connection, statement, resultSet);
             }
             return tickets;
+        }
+
+        /**
+         * @throws SQLException
+         * @description funzione la quale mostra gli id dei ticket con i rispettivi stati
+         */
+        private List<String> viewTicketStatuses() throws SQLException {
+
+            Connection connection = null;
+            Statement statement = null;
+            ResultSet resultSet = null;
+
+            List<String> tickets = new ArrayList<>();
+            try {
+                connection = Database.getInstance().getConnection();
+                statement = connection.createStatement();
+                resultSet = statement.executeQuery(Queries.TBL_TICKETING_SELECT_STATUSES_QUERY);
+
+                while (resultSet.next()) {
+                    int id = resultSet.getInt("ID");
+                    String stato = resultSet.getString("STATO");
+
+                    // Costruisci una rappresentazione leggibile del ticket
+                    String ticket = String.format("ID: %d, Stato: %s", id, stato);
+                    tickets.add(ticket);
+                }
+            } finally {
+                Database.closeConnection(connection, statement, resultSet);
+            }
+            return tickets;
+        }
+
+        /**
+         * @throws SQLException
+         * @description elimina ticket in base all'id fornito
+         */
+        private boolean deleteTicket(int ticketId) throws SQLException {
+            Connection connection = null;
+            PreparedStatement preparedStatement = null;
+
+            try {
+                connection = Database.getInstance().getConnection();
+                preparedStatement = connection.prepareStatement(Queries.TBL_TICKETING_DELETE_TICKET_BY_ID_QUERY);
+                preparedStatement.setInt(1, ticketId);
+
+                int rowsAffected = preparedStatement.executeUpdate();
+
+                // Se viene cancellata almeno una riga, la cancellazione è avvenuta con successo
+                return rowsAffected > 0;
+
+            } finally {
+                Database.closeConnection(connection, preparedStatement, null);
+            }
+        }
+
+        private boolean insertNewTicket(String ticketTitle, String ticketDescription, String ticketStatus, Date ticketCreationDate) throws SQLException {
+            Connection connection = null;
+            PreparedStatement preparedStatement = null;
+
+            try {
+                connection = Database.getInstance().getConnection();
+                preparedStatement = connection.prepareStatement(Queries.TBL_TICKETING_INSERT_NEW_TICKET_BY_QUERY);
+                preparedStatement.setString(1, ticketTitle);
+                preparedStatement.setString(2, ticketDescription);
+                preparedStatement.setString(3, ticketStatus);
+                preparedStatement.setDate(4, ticketCreationDate);
+
+                int rowsAffected = preparedStatement.executeUpdate();
+
+                // Se viene cancellata almeno una riga, la cancellazione è avvenuta con successo
+                return rowsAffected > 0;
+
+            } finally {
+                Database.closeConnection(connection, preparedStatement, null);
+            }
         }
 
     }
