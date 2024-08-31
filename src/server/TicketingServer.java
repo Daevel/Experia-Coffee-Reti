@@ -17,6 +17,7 @@ import java.util.List;
 public class TicketingServer {
 
     private ServerSocket serverSocket;
+    private boolean isRunning = true;
 
     public TicketingServer(int port) throws IOException {
         serverSocket = new ServerSocket(port);
@@ -25,74 +26,178 @@ public class TicketingServer {
 
     public void start() throws IOException {
         Log.info(Constants.SERVER_LISTENING);
-        while (true) {
+        while (isRunning) {
             try {
                 Socket clientSocket = serverSocket.accept();
-                new ClientHandler(clientSocket).start();
+                Log.info("Connessione statibilita con il client: " + clientSocket.getInetAddress());
+                new ClientHandler(this, clientSocket).start();
             } catch (IOException e) {
-                throw new IOException(e);
+                Log.error(e.getMessage());
             }
         }
+    }
+
+    public void stop() {
+        isRunning = false;
+        try {
+            if (serverSocket != null && !serverSocket.isClosed()) {
+                serverSocket.close();
+            }
+            Log.info("Server chiuso.");
+        } catch (IOException e) {
+            Log.error("Errore durante la chiusura del server: " + e.getMessage());
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+        TicketingServer server = new TicketingServer(Constants.TICKETING_SERVER_PORT);
+        server.start();
     }
 
     private static class ClientHandler extends Thread {
 
         private Socket clientSocket;
+        private TicketingServer server;
 
-        public ClientHandler(Socket socket) {
+        public ClientHandler(TicketingServer server, Socket socket) {
+            this.server = server;
             this.clientSocket = socket;
+        }
+
+        private void prepareViewTicketsRequest(ObjectOutputStream output) throws SQLException {
+            try {
+                List<String> tickets = viewTickets();
+                output.writeObject(tickets);
+
+            } catch (IOException e) {
+                Log.error(e.getMessage());
+            }
+
+        }
+
+        private void prepareViewTicketsStatusRequest(ObjectOutputStream output) throws SQLException {
+            try {
+                List<String> ticketStatuses = viewTicketStatuses();
+                output.writeObject(ticketStatuses);
+            } catch (IOException e) {
+                Log.error(e.getMessage());
+            }
+        }
+
+        private void prepareDeleteTicketRequest(ObjectInputStream input, ObjectOutputStream output) throws SQLException {
+            try {
+                int ticketId = (int) input.readObject();
+                boolean deleted = deleteTicket(ticketId);
+                if (deleted) {
+                    output.writeObject(Constants.SUCCESS);
+                    Log.info(String.format("Ticket con ID %d cancellato con successo.", ticketId));
+                } else {
+                    output.writeObject(Constants.FAILURE);
+                    Log.warning(String.format("Cancellazione fallita per il ticket con ID %d.", ticketId));
+                }
+            } catch (IOException | ClassNotFoundException e) {
+                Log.error(e.getMessage());
+            }
+        }
+
+        private void prepareInsertNewTicketRequest(ObjectInputStream input, ObjectOutputStream output) throws SQLException {
+            try {
+                String ticketTitle = (String) input.readObject();
+                String ticketDescription = (String) input.readObject();
+                String ticketStatus = (String) input.readObject();
+                Date ticketCreatedDate = (Date) input.readObject();
+                boolean inserted = insertNewTicket(ticketTitle, ticketDescription, ticketStatus, ticketCreatedDate);
+                if (inserted) {
+                    output.writeObject(Constants.SUCCESS);
+                    Log.info("Ticket inserito con successo.");
+                } else {
+                    output.writeObject(Constants.FAILURE);
+                    Log.warning("Inserimento fallito del ticket.");
+                }
+            } catch (SQLException | RuntimeException | ClassNotFoundException | IOException e) {
+                Log.error(e.getMessage());
+            }
+
+        }
+
+        private void prepareUpdateTicketRequest(ObjectInputStream input, ObjectOutputStream output) throws SQLException {
+            try {
+                Integer ticketUpdateId = (Integer) input.readObject();
+                String ticketUpdateStatus = (String) input.readObject();
+                boolean updated = updateTicketStatus(ticketUpdateId, ticketUpdateStatus);
+                if (updated) {
+                    output.writeObject(Constants.SUCCESS);
+                    Log.info("Ticket aggiornato con successo.");
+                } else {
+                    output.writeObject(Constants.FAILURE);
+                    Log.warning("Aggiornamento fallito del ticket.");
+                }
+            } catch (SQLException | ClassNotFoundException | RuntimeException | IOException e) {
+                Log.error(e.getMessage());
+            }
+        }
+
+        private void prepareClosingClientAndServer(ObjectOutputStream output) throws SQLException {
+            try {
+                output.writeObject(Constants.SUCCESS);
+                server.stop();
+            } catch (IOException e) {
+                Log.error(e.getMessage());
+            }
+
         }
 
         public void run() {
             try (
-                    ObjectInputStream input = new ObjectInputStream(clientSocket.getInputStream());
-                    ObjectOutputStream output = new ObjectOutputStream(clientSocket.getOutputStream())
+                    ObjectOutputStream output = new ObjectOutputStream(clientSocket.getOutputStream());
+                    ObjectInputStream input = new ObjectInputStream(clientSocket.getInputStream())
             ) {
-                String request = (String) input.readObject();
-                if (request.equals(Constants.VIEW_TICKETS)) {
-                    List<String> tickets = viewTickets();
-                    output.writeObject(tickets);
-                } else if (request.equals(Constants.VIEW_TICKETS_STATUSES)) {
-                    List<String> ticketStatuses = viewTicketStatuses();
-                    output.writeObject(ticketStatuses);
-                } else if (request.equals(Constants.DELETE_TICKET)) {
-                    int ticketId = (int) input.readObject();
-                    boolean deleted = deleteTicket(ticketId);
-                    if (deleted) {
-                        output.writeObject(Constants.SUCCESS);
-                        Log.info(String.format("Ticket con ID %d cancellato con successo.", ticketId));
-                    } else {
+                while (true) {
+                    try {
+                        String request = (String) input.readObject();
+                        switch (request) {
+                            case Constants.VIEW_TICKETS:
+                                prepareViewTicketsRequest(output);
+                                break;
+                            case Constants.VIEW_TICKETS_STATUSES:
+                                prepareViewTicketsStatusRequest(output);
+                                break;
+                            case Constants.DELETE_TICKET:
+                                prepareDeleteTicketRequest(input, output);
+                                break;
+                            case Constants.INSERT_NEW_TICKET:
+                                prepareInsertNewTicketRequest(input, output);
+                                break;
+                            case Constants.UPDATE_TICKET:
+                                prepareUpdateTicketRequest(input, output);
+                                break;
+                            case Constants.EXIT:
+                                prepareClosingClientAndServer(output);
+                                break;
+                            default:
+                                output.writeObject(Constants.UNKNOWN_REQUEST);
+                                break;
+                        }
+                    } catch (ClassNotFoundException | SQLException e) {
+                        Log.error("Errore durante la gestione del client: " + e.getMessage());
                         output.writeObject(Constants.FAILURE);
-                        Log.warning(String.format("Cancellazione fallita per il ticket con ID %d.", ticketId));
                     }
-                } else if (request.equals(Constants.INSERT_NEW_TICKET)) {
-                    String ticketTitle = (String) input.readObject();
-                    String ticketDescription = (String) input.readObject();
-                    String ticketStatus = (String) input.readObject();
-                    Date ticketCreatedDate = (Date) input.readObject();
-                    boolean inserted = insertNewTicket(ticketTitle, ticketDescription, ticketStatus, ticketCreatedDate);
-                    if (inserted) {
-                        output.writeObject(Constants.SUCCESS);
-                        Log.info("Ticket con ID %d inserito con successo.");
-                    } else {
-                        output.writeObject(Constants.FAILURE);
-                        Log.warning("Inserimento fallito del ticket.");
-                    }
-                } else if (request.equals(Constants.EXIT)) {
-                    clientSocket.close();
-                } else {
-                    output.writeObject(Constants.UNKNOWN_REQUEST);
                 }
-            } catch (IOException | ClassNotFoundException | SQLException e) {
+            } catch (IOException e) {
+                Log.error("Errore di I/O: " + e.getMessage());
+            } finally {
                 try {
-                    throw new IOException(e);
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
+                    clientSocket.close();
+                } catch (IOException e) {
+                    Log.error("Errore durante la chiusura del socket: " + e.getMessage());
                 }
+                Log.info("Connessione chiusa con il client");
             }
         }
 
+
         /**
+         * @return List<String> contenente la lista dei ticket trovati
          * @throws SQLException
          * @description funzione la quale mostra tutti i ticket disponibili
          */
@@ -130,6 +235,7 @@ public class TicketingServer {
         }
 
         /**
+         * @return List<String> contenente gli stati dei ticket suddivisi per ID
          * @throws SQLException
          * @description funzione la quale mostra gli id dei ticket con i rispettivi stati
          */
@@ -153,6 +259,8 @@ public class TicketingServer {
                     String ticket = String.format("ID: %d, Stato: %s", id, stato);
                     tickets.add(ticket);
                 }
+            } catch (SQLException ex) {
+                Log.error(ex.getMessage());
             } finally {
                 Database.closeConnection(connection, statement, resultSet);
             }
@@ -160,6 +268,7 @@ public class TicketingServer {
         }
 
         /**
+         * @return true se l'operazione e' andata a buon fine, altrimenti false
          * @throws SQLException
          * @description elimina ticket in base all'id fornito
          */
@@ -182,6 +291,15 @@ public class TicketingServer {
             }
         }
 
+        /**
+         * @param ticketTitle
+         * @param ticketDescription
+         * @param ticketStatus
+         * @param ticketCreationDate
+         * @return true se l'operazione e' andata a buon fine, altrimenti false
+         * @throws SQLException
+         * @description inserisce un nuovo ticket
+         */
         private boolean insertNewTicket(String ticketTitle, String ticketDescription, String ticketStatus, Date ticketCreationDate) throws SQLException {
             Connection connection = null;
             PreparedStatement preparedStatement = null;
@@ -204,10 +322,37 @@ public class TicketingServer {
             }
         }
 
+        /**
+         * @param ticketId
+         * @param ticketStatus
+         * @return true se l'operazione e' andata a buon fine, altrimenti false
+         * @throws SQLException
+         * @description aggiorna lo stato di un ticket
+         */
+        private boolean updateTicketStatus(Integer ticketId, String ticketStatus) throws SQLException {
+            Connection connection = null;
+            PreparedStatement preparedStatement = null;
+
+            try {
+                connection = Database.getInstance().getConnection();
+                preparedStatement = connection.prepareStatement(Queries.TBL_TICKETING_UPDATE_TICKET_STATUS_BY_QUERY);
+                preparedStatement.setString(1, ticketStatus);
+                preparedStatement.setInt(2, ticketId);
+
+                int rowsAffected = preparedStatement.executeUpdate();
+
+                // Se viene cancellata almeno una riga, la cancellazione è avvenuta con successo
+                return rowsAffected > 0;
+
+            } catch (SQLException e) {
+                Log.error(e.getMessage());
+            } finally {
+                Database.closeConnection(connection, preparedStatement, null);
+            }
+
+            return false;
+        }
+
     }
 
-    public static void main(String[] args) throws IOException {
-        TicketingServer server = new TicketingServer(Constants.TICKETING_SERVER_PORT);
-        server.start();
-    }
 }

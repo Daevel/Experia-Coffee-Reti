@@ -4,7 +4,7 @@ public class Constants {
 
     public static final String SUCCESS = "SUCCESS";
     public static final String FAILURE = "FAILURE";
-    
+
     /**
      * @description DATABASE TABLES NAMES
      */
@@ -77,7 +77,8 @@ public class Constants {
     public static final String SHOW_TICKETS = "2. Visualizza tutti i ticket";
     public static final String SHOW_TICKETS_STATUSES = "3. Visualizza gli stati dei vari ticket";
     public static final String DELETE_TICKET = "4. Elimina ticket";
-    public static final String EXIT = "5. Esci";
+    public static final String UPDATE_TICKET = "5. Aggiorna stato ticket";
+    public static final String EXIT = "6. Esci";
     public static final String CHOICE = "Scelta...  ";
     public static final String UNKNOWN_REQUEST = "Richiesta sconosciuta";
 

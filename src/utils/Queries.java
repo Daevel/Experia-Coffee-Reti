@@ -62,6 +62,8 @@ public class Queries {
 
     public static final String TBL_TICKETING_INSERT_NEW_TICKET_BY_QUERY = "INSERT INTO " + Constants.TBL_TICKETING + " (TITOLO, DESCRIZIONE, STATO, DATA_CREAZIONE) VALUES (?, ?, ?, ?)";
 
+    public static final String TBL_TICKETING_UPDATE_TICKET_STATUS_BY_QUERY = "UPDATE " + Constants.TBL_TICKETING + " SET STATO = ? WHERE ID = ?";
+
     /**
      * @description Query di creazione tabella Filiale
      */
