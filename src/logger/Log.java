@@ -1,5 +1,8 @@
 package logger;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class Log {
 
     // Livelli di log
@@ -7,8 +10,14 @@ public class Log {
         INFO, WARNING, ERROR, DEBUG, SUCCESS
     }
 
+    // Definisci il formato per la data e l'ora
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+
     private static void log(Level level, String message) {
-        System.out.println("[" + level + "] " + message);
+        // Ottieni l'ora corrente e formattala
+        String timestamp = LocalDateTime.now().format(formatter);
+        // Stampa il messaggio con il timestamp
+        System.out.println("[" + timestamp + "] [" + level + "] " + message);
     }
 
     public static void info(String message) {

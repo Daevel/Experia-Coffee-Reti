@@ -11,6 +11,7 @@ public class Constants {
     public static final String TBL_TICKETING = "Ticketing";
     public static final String TBL_EMPLOYEE = "Dipendente";
     public static final String TBL_FILIALE = "Filiale";
+    public static final String TBL_MAGAZZINO = "Magazzino";
 
     /**
      * @description DATABASE CONSTANTS
@@ -59,6 +60,17 @@ public class Constants {
     public static final String HOSTNAME = "localhost";
     public static final Integer TICKETING_SERVER_PORT = 8080;
     public static final Integer DIPENDENTE_CLIENT_PORT = 8080;
+    public static final Integer DIPENDENTE_SERVER_PORT = 8081;
+    public static final Integer MAGAZZINO_SERVER_PORT = 6000;
+    public static final Integer PRODUTTORE_CLIENT_PORT = 6000;
+
+    /**
+     * @description Magazzino choices
+     */
+    public static final String MAGAZZINO_VIEW_PRODUCTS = "MAGAZZINO_VIEW_PRODUCTS";
+    public static final String MAGAZZINO_INSERT_NEW_PRODUCT = "MAGAZZINO_INSERT_NEW_PRODUCT";
+    public static final String MAGAZZINO_UPDATE_PRODUCTS = "MAGAZZINO_UPDATE_PRODUCTS";
+    public static final String MAGAZZINO_DELETE_PRODUCTS = "MAGAZZINO_DELETE_PRODUCTS";
 
     /**
      * @description Choices

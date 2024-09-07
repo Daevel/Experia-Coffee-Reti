@@ -6,6 +6,7 @@ import utils.Constants;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.Date;
 import java.util.List;
@@ -13,15 +14,35 @@ import java.util.Scanner;
 
 public class Dipendente {
 
-    public static void main(String[] args) throws IOException {
-        try (
-                Socket socket = new Socket(Constants.HOSTNAME, Constants.DIPENDENTE_CLIENT_PORT);
-                ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
-                ObjectInputStream input = new ObjectInputStream(socket.getInputStream());
-                Scanner scanner = new Scanner(System.in)) {
+    private static final int DIPENDENTE_SERVER_PORT = Constants.DIPENDENTE_SERVER_PORT;// Inserisci l'host del server Ticketing
+    private static final int TICKETING_SERVER_PORT = Constants.TICKETING_SERVER_PORT; // Inserisci la porta del server Ticketing
+
+    public static void main(String[] args) {
+        new Thread(Dipendente::startServer).start();
+        new Thread(Dipendente::startTicketingClient).start();
+    }
+
+    private static void startServer() {
+        try (ServerSocket serverSocket = new ServerSocket(DIPENDENTE_SERVER_PORT)) {
+            Log.info("Server Dipendente in ascolto sulla porta " + DIPENDENTE_SERVER_PORT);
 
             while (true) {
+                Socket clientSocket = serverSocket.accept();
+                Log.info("Connessione accettata da " + clientSocket.getInetAddress());
+                new Thread(new ClientHandler(clientSocket)).start();
+            }
+        } catch (IOException e) {
+            Log.error("Errore del server: " + e.getMessage());
+        }
+    }
 
+    private static void startTicketingClient() {
+        try (Socket socket = new Socket("localhost", TICKETING_SERVER_PORT);
+             ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
+             ObjectInputStream input = new ObjectInputStream(socket.getInputStream());
+             Scanner scanner = new Scanner(System.in)) {
+
+            while (true) {
                 showChoices();
 
                 int choice = scanner.nextInt();
@@ -49,7 +70,56 @@ public class Dipendente {
                 }
             }
         } catch (IOException e) {
-            throw new IOException(e);
+            Log.error("Errore del client Ticketing: " + e.getMessage());
+        }
+    }
+
+    private static class ClientHandler implements Runnable {
+        private final Socket clientSocket;
+
+        public ClientHandler(Socket clientSocket) {
+            this.clientSocket = clientSocket;
+        }
+
+        @Override
+        public void run() {
+            try (
+                    Socket socket = new Socket(Constants.HOSTNAME, Constants.DIPENDENTE_CLIENT_PORT);
+                    ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
+                    ObjectInputStream input = new ObjectInputStream(socket.getInputStream());
+                    Scanner scanner = new Scanner(System.in)) {
+
+                while (true) {
+
+                    showChoices();
+
+                    int choice = scanner.nextInt();
+                    scanner.nextLine();
+
+                    switch (choice) {
+                        case 1:
+                            prepareInsertNewTicketRequest(output, input, scanner);
+                            break;
+                        case 2:
+                            prepareShowTicketsRequest(output, input);
+                            break;
+                        case 3:
+                            prepareShowTicketStatusesRequest(output, input);
+                            break;
+                        case 4:
+                            prepareDeleteTicketRequest(output, input, scanner);
+                            break;
+                        case 5:
+                            prepareUpdateTicketRequest(output, input, scanner);
+                            break;
+                        case 6:
+                            prepareClosingClientAndServerRequest(output, input);
+                            return;
+                    }
+                }
+            } catch (IOException e) {
+                Log.error(e.getMessage());
+            }
         }
     }
 

@@ -224,6 +224,44 @@ public class Database {
         }
     }
 
+    /**
+     * @throws SQLException handle SQL errors
+     * @description Creation of Magazzino table
+     */
+    private static void createMagazzinoTable() throws SQLException {
+        Connection connection = null;
+        Statement statement = null;
+        ResultSet tables = null;
+
+        try {
+            // Connessione al database specifico
+            connection = getInstance().getConnection();
+            statement = connection.createStatement();
+
+            // Ottieni i metadati del database
+            DatabaseMetaData databaseMetaData = connection.getMetaData();
+
+            tables = databaseMetaData.getTables(null, null, Constants.TBL_MAGAZZINO, null);
+
+            if (tables.next()) {
+                // La tabella esiste già
+                Log.info(String.format(Constants.SQL_TABLE_ALREADY_EXISTS, Constants.TBL_MAGAZZINO));
+            } else {
+                statement.executeUpdate(Queries.TBL_MAGAZZINO_CREATE_QUERY_TABLE);
+                Log.success(String.format(Constants.SQL_CREATION_TABLE_SUCCESS, Constants.TBL_MAGAZZINO));
+
+                statement.executeUpdate(Queries.TBL_MAGAZZINO_INSERT_QUERY_TABLE);
+                Log.success(String.format(Constants.SQL_INSERTION_TABLE_SUCCESS, Constants.TBL_MAGAZZINO));
+            }
+        } catch (SQLException e) {
+            Log.error(String.format(Constants.SQL_CREATION_TABLE_ERROR, Constants.TBL_MAGAZZINO));
+            throw new SQLException(e);
+        } finally {
+            // Chiudi la connessione e lo statement
+            closeConnection(connection, statement);
+        }
+    }
+
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
 
@@ -241,6 +279,7 @@ public class Database {
             createFilialeTable();
             createEmployeeTable();
             createTicketingTable();
+            createMagazzinoTable();
 
         } catch (SQLException e) {
             Log.error(String.format(Constants.SQL_CONNECTION_ERROR_CONNECTION, Constants.DATABASE_NAME));

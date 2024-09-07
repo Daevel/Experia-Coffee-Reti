@@ -58,11 +58,58 @@ public class Queries {
 
     public static final String TBL_TICKETING_SELECT_STATUSES_QUERY = "SELECT ID,STATO FROM Ticketing;";
 
-    public static final String TBL_TICKETING_DELETE_TICKET_BY_ID_QUERY = "DELETE FROM Ticketing WHERE ID = ?";
+    public static final String TBL_TICKETING_DELETE_TICKET_BY_ID_QUERY = "DELETE FROM" + Constants.TBL_TICKETING + " WHERE ID = ?";
 
     public static final String TBL_TICKETING_INSERT_NEW_TICKET_BY_QUERY = "INSERT INTO " + Constants.TBL_TICKETING + " (TITOLO, DESCRIZIONE, STATO, DATA_CREAZIONE) VALUES (?, ?, ?, ?)";
 
     public static final String TBL_TICKETING_UPDATE_TICKET_STATUS_BY_QUERY = "UPDATE " + Constants.TBL_TICKETING + " SET STATO = ? WHERE ID = ?";
+
+    //! da controllare
+    public static final String TBL_MAGAZZINO_INSERT_NEW_PRODUCT_QUERY =  "INSERT INTO " + Constants.TBL_MAGAZZINO + " (CODICE_MAGAZZINO, ID_PRODOTTO, QUANTITA_PRODOTTO, NOME_PRODOTTO, NOME_MAGAZZINO) VALUES (?,?,?,?,?)";
+
+    public static final String TBL_MAGAZZINO_UPDATE_PRODUCT_QUANTITY_QUERY = "UPDATE " + Constants.TBL_MAGAZZINO + " SET QUANTITA_PRODOTTO = ? WHERE ID_PRODOTTO = ?";
+
+    public static final String TBL_MAGAZZINO_DELETE_PRODUCT_QUERY = "DELETE FROM " + Constants.TBL_MAGAZZINO + " WHERE ID_PRODOTTO = ?";
+    /**
+     * @description Query di creazione tabella Magazzino
+     */
+    public static final String TBL_MAGAZZINO_CREATE_QUERY_TABLE = "CREATE TABLE IF NOT EXISTS Magazzino (\n" +
+            "    CODICE_MAGAZZINO VARCHAR(50) NOT NULL,\n" +
+            "    ID_PRODOTTO VARCHAR(50) NOT NULL,\n" +
+            "    QUANTITA_PRODOTTO INT NOT NULL,\n" +
+            "    NOME_PRODOTTO VARCHAR(50) DEFAULT NULL,\n" +
+            "    NOME_MAGAZZINO VARCHAR(50) DEFAULT NULL,\n" +
+            "    FOREIGN KEY (CODICE_MAGAZZINO) REFERENCES Filiale(CODICE_ZONA_FILIALE)\n" +
+            ");";
+
+    public static final String TBL_MAGAZZINO_INSERT_QUERY_TABLE = "INSERT INTO Magazzino (CODICE_MAGAZZINO, ID_PRODOTTO, QUANTITA_PRODOTTO, NOME_PRODOTTO, NOME_MAGAZZINO)\n" +
+            "VALUES\n" +
+            "    ('Z003', 'LVZ-BCEG', 30, 'Box Crema e Gusto', 'Experia Coffee Warehouse - Milan'),\n" +
+            "    ('Z003', 'LVZ-BGE', 30, 'Box Gran Espresso', 'Experia Coffee Warehouse - Milan'),\n" +
+            "    ('Z003', 'LVZ-BSC', 30, 'Box Super Crema', 'Experia Coffee Warehouse - Milan'),\n" +
+            "    ('Z003', 'LVZ-DDC', 30, 'Box Dek Decaffeinato', 'Experia Coffee Warehouse - Milan'),\n" +
+            "    ('Z003', 'LVZ-QRED', 30, 'Box Qualità Rossa', 'Experia Coffee Warehouse - Milan'),\n" +
+            "    ('Z001', 'KMB-BTF', 20, 'Box Top Flavour', 'Experia Coffee Warehouse - Naples'),\n" +
+            "    ('Z001', 'KMB-BPR', 20, 'Box Prestige', 'Experia Coffee Warehouse - Naples'),\n" +
+            "    ('Z001', 'KMB-BNP', 20, 'Box Napoli', 'Experia Coffee Warehouse - Naples'),\n" +
+            "    ('Z001', 'KMB-BGOLD', 20, 'Box Aroma Gold', 'Experia Coffee Warehouse - Naples'),\n" +
+            "    ('Z001', 'KMB-BEX', 20, 'Box Extra Cream', 'Experia Coffee Warehouse - Naples'),\n" +
+            "    ('Z004', 'JM-BVB', 25, 'Box Vienna Blend', 'Experia Coffee Warehouse - Florence'),\n" +
+            "    ('Z004', 'JM-BRYL', 25, 'Box Vienna Blend', 'Experia Coffee Warehouse - Florence'),\n" +
+            "    ('Z004', 'JM-BPLT', 25, 'Box Platinum', 'Experia Coffee Warehouse - Florence'),\n" +
+            "    ('Z004', 'JM-BJB', 25, 'Box Jubilee Blend', 'Experia Coffee Warehouse - Florence'),\n" +
+            "    ('Z004', 'JM-BAS', 25, 'Box Amabili Sensi', 'Experia Coffee Warehouse - Florence'),\n" +
+            "    ('Z002', 'ILY-BIM', 20, 'Box illy Monoarabica', 'Experia Coffee Warehouse - Rome'),\n" +
+            "    ('Z002', 'ILY-BII', 20, 'Box illy Intenso', 'Experia Coffee Warehouse - Rome'),\n" +
+            "    ('Z002', 'ILY-BIDCF', 20, 'Box illy Decaffeinato', 'Experia Coffee Warehouse - Rome'),\n" +
+            "    ('Z002', 'ILY-BIC', 20, 'Box illy Classico', 'Experia Coffee Warehouse - Rome'),\n" +
+            "    ('Z002', 'ILY-BIB', 20, 'Box illy Blend', 'Experia Coffee Warehouse - Rome'),\n" +
+            "    ('Z005', 'DLY-BPD', 20, 'Box Prodomo', 'Experia Coffee Warehouse - Palermo'),\n" +
+            "    ('Z005', 'DLY-BMNC', 20, 'Box Monaco', 'Experia Coffee Warehouse - Palermo'),\n" +
+            "    ('Z005', 'DLY-BETP', 20, 'Box Ethiopia', 'Experia Coffee Warehouse - Palermo'),\n" +
+            "    ('Z005', 'DLY-BCL', 20, 'Box Classic', 'Experia Coffee Warehouse - Palermo'),\n" +
+            "    ('Z005', 'DLY-BCGOLD', 20, 'Box Crema Oro', 'Experia Coffee Warehouse - Palermo');";
+
 
     /**
      * @description Query di creazione tabella Filiale
