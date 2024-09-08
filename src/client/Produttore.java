@@ -15,13 +15,12 @@ public class Produttore {
 
     public static void main(String[] args) throws IOException {
         try (
-                Socket socket = new Socket(Constants.HOSTNAME, Constants.PRODUTTORE_CLIENT_PORT);
+                Socket socket = new Socket(Constants.HOSTNAME, Constants.DIPENDENTE_SERVER_PORT);
                 ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
                 ObjectInputStream input = new ObjectInputStream(socket.getInputStream());
                 Scanner scanner = new Scanner(System.in)) {
 
             while (true) {
-
                 showChoices();
 
                 int choice = scanner.nextInt();
@@ -41,12 +40,18 @@ public class Produttore {
                         prepareDeleteProductRequest(output, input, scanner);
                         break;
                     case 5:
+                        prepareViewOrderListRequest(output, input);
+                        break;
+                    case 6:
+                        prepareViewProductStatusRequest(output, input);
+                        break;
+                    case 7:
                         prepareClosingClientAndServerRequest(output, input);
                         return;
                 }
             }
         } catch (IOException e) {
-            throw new IOException(e);
+            Log.error("Errore nella connessione: " + e.getMessage());
         }
     }
 
@@ -55,11 +60,17 @@ public class Produttore {
      */
     public static void showChoices() {
         System.out.println("Scegli un'operazione:");
+        System.out.println("--- OPERAZIONI MAGAZZINO ---");
         System.out.println("1 - Inserisci nuovo prodotto");
         System.out.println("2 - Visualizza prodotti");
         System.out.println("3 - Aggiorna quantità prodotto");
         System.out.println("4 - Elimina prodotto");
-        System.out.println("5 - Esci");
+        System.out.println("--- OPERAZIONI ORDINI ---");
+        System.out.println("5 - Visualizza ordini");
+        System.out.println("6 - Visualizza stato degli ordini");
+        System.out.println("-------------------------");
+        System.out.println("7 - Esci");
+
         System.out.print("Scelta: ");
     }
 
@@ -71,22 +82,26 @@ public class Produttore {
      */
     public static void prepareInsertNewProductRequest(ObjectOutputStream output, ObjectInputStream input, Scanner scanner) {
         try {
-
-            //CODICE_MAGAZZINO, ID_PRODOTTO, QUANTITA_PRODOTTO, NOME_PRODOTTO, NOME_MAGAZZINO
+            // Parametri da inserire: CODICE_MAGAZZINO, ID_PRODOTTO, QUANTITA_PRODOTTO, NOME_PRODOTTO, NOME_MAGAZZINO
 
             System.out.print("Inserisci l'ID del prodotto: ");
             String productId = scanner.nextLine();
             System.out.print("Inserisci la quantità del prodotto: ");
             int productQuantity = scanner.nextInt();
+            scanner.nextLine();  // Consumare newline
+
             System.out.print("Inserisci il nome del prodotto: ");
-            String productName = scanner.next();
+            String productName = scanner.nextLine();
+
             System.out.print("Inserisci il nome del magazzino: ");
             String nomeMagazzino = scanner.nextLine();
 
-            scanner.nextLine();
+            // Imposta CODICE_MAGAZZINO su "Z000"
+            String codiceMagazzino = "Z000";
 
             // Invia al server la richiesta di inserimento prodotto
             output.writeObject(Constants.MAGAZZINO_INSERT_NEW_PRODUCT);
+            output.writeObject(codiceMagazzino);  // Aggiunto parametro CODICE_MAGAZZINO
             output.writeObject(productId);
             output.writeObject(productQuantity);
             output.writeObject(productName);
@@ -105,6 +120,7 @@ public class Produttore {
         }
     }
 
+
     /**
      * @param output
      * @param input
@@ -112,12 +128,46 @@ public class Produttore {
      */
     public static void prepareViewProductsRequest(ObjectOutputStream output, ObjectInputStream input) {
         try {
+            // Invia la richiesta a DipendenteServer
             output.writeObject(Constants.MAGAZZINO_VIEW_PRODUCTS);
+
+            // Attendi la risposta (lista dei prodotti) da DipendenteServer
             List<String> products = (List<String>) input.readObject();
-            System.out.println("Prodotti disponibili:");
-            System.out.println(Utils.formatProductList(products));
+
+            // Mostra i prodotti
+            if (products != null && !products.isEmpty()) {
+                System.out.println("Prodotti disponibili:");
+                System.out.println(Utils.formatProductList(products));
+            } else {
+                System.out.println("Nessun prodotto trovato.");
+            }
         } catch (IOException | ClassNotFoundException e) {
-            Log.error(e.getMessage());
+            Log.error("Errore durante la visualizzazione dei prodotti: " + e.getMessage());
+        }
+    }
+
+    /**
+     * @param output
+     * @param input
+     * @description elabora la richiesta di visualizzazione dello stato deglo ordini
+     */
+    public static void prepareViewProductStatusRequest(ObjectOutputStream output, ObjectInputStream input) {
+        try {
+            // Invia la richiesta a DipendenteServer
+            output.writeObject(Constants.ORDER_VIEW_STATUS_LIST);
+
+            // Attendi la risposta (lista dei prodotti) da DipendenteServer
+            List<String> status = (List<String>) input.readObject();
+
+            // Mostra i prodotti
+            if (status != null && !status.isEmpty()) {
+                System.out.println("Stato degli ordini disponibili:");
+                System.out.println(Utils.formatProductList(status));
+            } else {
+                System.out.println("Nessun prodotto trovato.");
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            Log.error("Errore durante la visualizzazione dei prodotti: " + e.getMessage());
         }
     }
 
@@ -185,6 +235,30 @@ public class Produttore {
     }
 
 
+    /**
+     * @param output
+     * @param input
+     * @description elabora la richiesta di visualizzazione degli ordini
+     */
+    public static void prepareViewOrderListRequest(ObjectOutputStream output, ObjectInputStream input) {
+        try {
+            // Invia la richiesta a DipendenteServer
+            output.writeObject(Constants.ORDER_VIEW_LIST);
+
+            // Attendi la risposta (lista dei prodotti) da DipendenteServer
+            List<String> orders = (List<String>) input.readObject();
+
+            // Mostra i prodotti
+            if (orders != null && !orders.isEmpty()) {
+                System.out.println("Prodotti disponibili:");
+                System.out.println(Utils.formatProductList(orders));
+            } else {
+                System.out.println("Nessun ordine trovato.");
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            Log.error("Errore durante la visualizzazione dei prodotti: " + e.getMessage());
+        }
+    }
 
     /**
      * @param output

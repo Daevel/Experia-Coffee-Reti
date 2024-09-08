@@ -12,6 +12,7 @@ public class Constants {
     public static final String TBL_EMPLOYEE = "Dipendente";
     public static final String TBL_FILIALE = "Filiale";
     public static final String TBL_MAGAZZINO = "Magazzino";
+    public static final String TBL_ORDINE = "Ordine";
 
     /**
      * @description DATABASE CONSTANTS
@@ -62,7 +63,7 @@ public class Constants {
     public static final Integer DIPENDENTE_CLIENT_PORT = 8080;
     public static final Integer DIPENDENTE_SERVER_PORT = 8081;
     public static final Integer MAGAZZINO_SERVER_PORT = 6000;
-    public static final Integer PRODUTTORE_CLIENT_PORT = 6000;
+    public static final Integer ORDINE_SERVER_PORT = 7000;
 
     /**
      * @description Magazzino choices
@@ -71,6 +72,14 @@ public class Constants {
     public static final String MAGAZZINO_INSERT_NEW_PRODUCT = "MAGAZZINO_INSERT_NEW_PRODUCT";
     public static final String MAGAZZINO_UPDATE_PRODUCTS = "MAGAZZINO_UPDATE_PRODUCTS";
     public static final String MAGAZZINO_DELETE_PRODUCTS = "MAGAZZINO_DELETE_PRODUCTS";
+
+    /**
+     * @description Ordine choices
+     */
+    public static final String ORDER_VIEW_LIST = "ORDER_VIEW_LIST";
+    public static final String ORDER_VIEW_STATUS_LIST = "ORDER_VIEW_STATUS_LIST";
+//    public static final String ORDER_UPDATE = "ORDER_UPDATE";
+//    public static final String ORDER_DELETE = "ORDER_DELETE";
 
     /**
      * @description Choices

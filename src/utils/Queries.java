@@ -65,11 +65,45 @@ public class Queries {
     public static final String TBL_TICKETING_UPDATE_TICKET_STATUS_BY_QUERY = "UPDATE " + Constants.TBL_TICKETING + " SET STATO = ? WHERE ID = ?";
 
     //! da controllare
-    public static final String TBL_MAGAZZINO_INSERT_NEW_PRODUCT_QUERY =  "INSERT INTO " + Constants.TBL_MAGAZZINO + " (CODICE_MAGAZZINO, ID_PRODOTTO, QUANTITA_PRODOTTO, NOME_PRODOTTO, NOME_MAGAZZINO) VALUES (?,?,?,?,?)";
+    public static final String TBL_MAGAZZINO_INSERT_NEW_PRODUCT_QUERY = "INSERT INTO " + Constants.TBL_MAGAZZINO + " (CODICE_MAGAZZINO, ID_PRODOTTO, QUANTITA_PRODOTTO, NOME_PRODOTTO, NOME_MAGAZZINO) VALUES (?,?,?,?,?)";
 
     public static final String TBL_MAGAZZINO_UPDATE_PRODUCT_QUANTITY_QUERY = "UPDATE " + Constants.TBL_MAGAZZINO + " SET QUANTITA_PRODOTTO = ? WHERE ID_PRODOTTO = ?";
 
     public static final String TBL_MAGAZZINO_DELETE_PRODUCT_QUERY = "DELETE FROM " + Constants.TBL_MAGAZZINO + " WHERE ID_PRODOTTO = ?";
+
+    /**
+     * @description Query di creazione tabella Ordine
+     */
+    public static final String TBL_ORDER_CREATE_QUERY_TABLE = "CREATE TABLE IF NOT EXISTS Ordine (\n" +
+            "    ID INT AUTO_INCREMENT PRIMARY KEY,\n" +
+            "    FATTURA VARCHAR(50) NOT NULL,\n" +
+            "    NUMERO_ORDINE INT DEFAULT NULL,\n" +
+            "    ID_CARRELLO INT NOT NULL,\n" +
+            "    INDIRIZZO_SPEDIZIONE VARCHAR(50) DEFAULT NULL,\n" +
+            "    STATO_ORDINE VARCHAR(50) DEFAULT 'non gestito');";
+
+    public static final String TBL_ORDER_INSERT_QUERY_TABLE = "INSERT INTO Ordine (FATTURA, NUMERO_ORDINE, ID_CARRELLO, INDIRIZZO_SPEDIZIONE, STATO_ORDINE) VALUES\n" +
+            "('FATTURA001', 1001, 101, 'Via Roma 10, Milano', 'spedito'),\n" +
+            "('FATTURA002', 1002, 102, 'Via Torino 21, Roma', 'in lavorazione'),\n" +
+            "('FATTURA003', 1003, 103, 'Via Firenze 5, Firenze', 'spedito'),\n" +
+            "('FATTURA004', 1004, 104, 'Corso Venezia 12, Napoli', 'annullato'),\n" +
+            "('FATTURA005', 1005, 105, 'Piazza Duomo 1, Milano', 'non gestito'),\n" +
+            "('FATTURA006', 1006, 106, 'Via Garibaldi 7, Torino', 'spedito'),\n" +
+            "('FATTURA007', 1007, 107, 'Via Verdi 9, Bologna', 'in lavorazione'),\n" +
+            "('FATTURA008', 1008, 108, 'Via Mazzini 11, Genova', 'spedito'),\n" +
+            "('FATTURA009', 1009, 109, 'Piazza San Marco 3, Venezia', 'annullato'),\n" +
+            "('FATTURA010', 1010, 110, 'Corso Italia 2, Bari', 'spedito'),\n" +
+            "('FATTURA011', 1011, 111, 'Via Dante 14, Palermo', 'in lavorazione'),\n" +
+            "('FATTURA012', 1012, 112, 'Via Leopardi 6, Catania', 'non gestito'),\n" +
+            "('FATTURA013', 1013, 113, 'Via Manzoni 8, Verona', 'spedito'),\n" +
+            "('FATTURA014', 1014, 114, 'Piazza Navona 4, Roma', 'spedito'),\n" +
+            "('FATTURA015', 1015, 115, 'Via Colombo 16, Pisa', 'in lavorazione'),\n" +
+            "('FATTURA016', 1016, 116, 'Via delle Rose 20, Firenze', 'annullato'),\n" +
+            "('FATTURA017', 1017, 117, 'Via Montenapoleone 3, Milano', 'spedito'),\n" +
+            "('FATTURA018', 1018, 118, 'Via Roma 15, Torino', 'non gestito'),\n" +
+            "('FATTURA019', 1019, 119, 'Via della Libertà 22, Palermo', 'spedito'),\n" +
+            "('FATTURA020', 1020, 120, 'Piazza della Signoria 5, Firenze', 'in lavorazione');\n";
+
     /**
      * @description Query di creazione tabella Magazzino
      */

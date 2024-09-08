@@ -262,6 +262,44 @@ public class Database {
         }
     }
 
+    /**
+     * @throws SQLException handle SQL errors
+     * @description Creation of Order table
+     */
+    private static void createOrderTable() throws SQLException {
+        Connection connection = null;
+        Statement statement = null;
+        ResultSet tables = null;
+
+        try {
+            // Connessione al database specifico
+            connection = getInstance().getConnection();
+            statement = connection.createStatement();
+
+            // Ottieni i metadati del database
+            DatabaseMetaData databaseMetaData = connection.getMetaData();
+
+            tables = databaseMetaData.getTables(null, null, Constants.TBL_ORDINE, null);
+
+            if (tables.next()) {
+                // La tabella esiste già
+                Log.info(String.format(Constants.SQL_TABLE_ALREADY_EXISTS, Constants.TBL_ORDINE));
+            } else {
+                statement.executeUpdate(Queries.TBL_ORDER_CREATE_QUERY_TABLE);
+                Log.success(String.format(Constants.SQL_CREATION_TABLE_SUCCESS, Constants.TBL_ORDINE));
+
+                statement.executeUpdate(Queries.TBL_ORDER_INSERT_QUERY_TABLE);
+                Log.success(String.format(Constants.SQL_INSERTION_TABLE_SUCCESS, Constants.TBL_ORDINE));
+            }
+        } catch (SQLException e) {
+            Log.error(String.format(Constants.SQL_CREATION_TABLE_ERROR, Constants.TBL_ORDINE));
+            throw new SQLException(e);
+        } finally {
+            // Chiudi la connessione e lo statement
+            closeConnection(connection, statement);
+        }
+    }
+
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
 
@@ -280,6 +318,7 @@ public class Database {
             createEmployeeTable();
             createTicketingTable();
             createMagazzinoTable();
+            createOrderTable();
 
         } catch (SQLException e) {
             Log.error(String.format(Constants.SQL_CONNECTION_ERROR_CONNECTION, Constants.DATABASE_NAME));
