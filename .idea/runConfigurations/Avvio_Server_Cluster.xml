@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Avvio Server Cluster" type="CompoundRunConfigurationType">
+    <toRun name="DipendenteServer" type="Application" />
+    <toRun name="MagazzinoServer" type="Application" />
+    <toRun name="OrdineServer" type="Application" />
+    <toRun name="TicketingServer" type="Application" />
+    <method v="2" />
+  </configuration>
+</component>

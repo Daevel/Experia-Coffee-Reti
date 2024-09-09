@@ -63,7 +63,7 @@ public class Constants {
     public static final Integer DIPENDENTE_CLIENT_PORT = 8080;
     public static final Integer DIPENDENTE_SERVER_PORT = 8081;
     public static final Integer MAGAZZINO_SERVER_PORT = 6000;
-    public static final Integer ORDINE_SERVER_PORT = 7000;
+    public static final Integer ORDINE_SERVER_PORT = 13000;
 
     /**
      * @description Magazzino choices

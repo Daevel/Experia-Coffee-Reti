@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Avvio Clients" type="CompoundRunConfigurationType">
+    <toRun name="Dipendente" type="Application" />
+    <toRun name="Produttore" type="Application" />
+    <method v="2" />
+  </configuration>
+</component>
