@@ -14,6 +14,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @description classe inerente al TicketingServer, per la gestione dei ticket e delle segnalazioni da parte degli utenti di Experia Coffee
+ */
 public class TicketingServer {
 
     private ServerSocket serverSocket;

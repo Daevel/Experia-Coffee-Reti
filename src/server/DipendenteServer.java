@@ -11,6 +11,10 @@ import java.net.Socket;
 import java.sql.SQLException;
 import java.util.List;
 
+
+/**
+ * @description Classe inerente al server intermediario fra Produttore e MagazzinoServer e OrdineServer
+ */
 public class DipendenteServer {
 
     private ServerSocket serverSocket;
@@ -77,6 +81,9 @@ public class DipendenteServer {
                             case Constants.ORDER_VIEW_STATUS_LIST:
                                 forwardViewOrderStatusListRequest(output);
                                 break;
+                            case Constants.ORDER_UPDATE_STATUS:
+                                forwardUpdateOrderStatus(input, output);
+                                break;
                             case Constants.MAGAZZINO_INSERT_NEW_PRODUCT:
                                 forwardInsertNewProductRequest(input, output);
                                 break;
@@ -114,8 +121,7 @@ public class DipendenteServer {
                 Log.info("Connessione chiusa con il client");
             }
         }
-
-
+        
         private void forwardInsertNewProductRequest(ObjectInputStream input, ObjectOutputStream output) throws IOException, ClassNotFoundException {
             try {
                 String codiceMagazzino = (String) input.readObject();
@@ -192,19 +198,35 @@ public class DipendenteServer {
             }
         }
 
-        private void forwardUpdateProductRequest(ObjectInputStream input, ObjectOutputStream output) throws IOException, ClassNotFoundException, SQLException {
+        private void forwardUpdateOrderStatus(ObjectInputStream input, ObjectOutputStream output) throws IOException, ClassNotFoundException, SQLException {
             try {
-                String productId = (String) input.readObject();
-                int newQuantity = (int) input.readObject();
+                Integer orderId = (Integer) input.readObject();
+                String orderStatus = (String) input.readObject();
 
                 // Inoltra la richiesta a MagazzinoServer
-                String response = forwardUpdateProductToMagazzinoServer(productId, newQuantity);
+                String response = forwardUpdateOrderStatusToOrdineServer(orderId, orderStatus);
 
                 // Invia la risposta a Produttore
                 output.writeObject(response);
             } catch (IOException | ClassNotFoundException e) {
                 Log.error(e.getMessage());
                 output.writeObject(Constants.FAILURE);
+            }
+        }
+
+        private String forwardUpdateOrderStatusToOrdineServer(Integer orderId, String orderStatus) throws IOException, ClassNotFoundException {
+            try (
+                    Socket orderSocket = new Socket(Constants.HOSTNAME, Constants.ORDINE_SERVER_PORT);
+                    ObjectOutputStream orderOutput = new ObjectOutputStream(orderSocket.getOutputStream());
+                    ObjectInputStream orderInput = new ObjectInputStream(orderSocket.getInputStream())
+            ) {
+                // Invia richiesta di aggiornamento a MagazzinoServer
+                orderOutput.writeObject(Constants.ORDER_UPDATE_STATUS);
+                orderOutput.writeObject(orderId);
+                orderOutput.writeObject(orderStatus);
+
+                // Leggi la risposta da MagazzinoServer
+                return (String) orderInput.readObject();
             }
         }
 
@@ -320,6 +342,22 @@ public class DipendenteServer {
             }
         }
 
+        private void forwardUpdateProductRequest(ObjectInputStream input, ObjectOutputStream output) throws IOException, ClassNotFoundException, SQLException {
+            try {
+                String productId = (String) input.readObject();
+                int newQuantity = (int) input.readObject();
+
+                // Inoltra la richiesta a MagazzinoServer
+                String response = forwardUpdateProductToMagazzinoServer(productId, newQuantity);
+
+                // Invia la risposta a Produttore
+                output.writeObject(response);
+            } catch (IOException | ClassNotFoundException e) {
+                Log.error(e.getMessage());
+                output.writeObject(Constants.FAILURE);
+            }
+        }
+
         private void prepareClosingClientAndServer(ObjectOutputStream output) throws SQLException {
             try {
                 output.writeObject(Constants.SUCCESS);
@@ -329,7 +367,6 @@ public class DipendenteServer {
             }
 
         }
-
 
     }
 

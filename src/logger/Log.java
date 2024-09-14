@@ -3,6 +3,9 @@ package logger;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * @description classe usata per la creazione di vari log, per aumentare la leggibilita' del codice e degli output
+ */
 public class Log {
 
     // Livelli di log

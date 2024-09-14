@@ -32,7 +32,6 @@ public class Constants {
     /**
      * @description QUERY SUCCESS LOG MESASGES
      */
-    public static final String SQL_DATABASE_IN_USE = "Database %s in uso!";
     public static final String SQL_DATABASE_CREATION_SUCCESS = "Creazione del database %s avvenuta con successo!";
     public static final String SQL_DATABASE_CONNECTION_SUCCEDED = "Connessione al database %s riuscita!";
     public static final String SQL_CREATION_TABLE_SUCCESS = "Creazione della tabella %s effettuata con successo!";
@@ -41,7 +40,6 @@ public class Constants {
     /**
      * @description QUERY ERROR LOG MESASGES
      */
-    public static final String SQL_CONNECTION_ERROR_CONNECTION_CLOSE = "Errore durante la chiusura della connessione di %s !";
     public static final String SQL_CONNECTION_ERROR_CONNECTION = "Errore durante la connessione al database %s !";
     public static final String SQL_VERIFY_EXISTENCE_DB_ERROR_CONNECTION = "Errore durante la creazione del database o controllo dell'esistenza!";
     public static final String SQL_DRIVER_JDBC_NOT_FOUND = "Driver JDBC non trovato!";
@@ -53,7 +51,6 @@ public class Constants {
      */
     public static final String SERVER_SOCKET_CONNECTION_ESTABLISHED = "Server avviato sulla porta %s";
     public static final String SERVER_LISTENING = "Server in ascolto...";
-    public static final String CLIENT_SOCKET_CONNECTION_ESTABLISHED = "Client in ascolto sulla porta %s";
 
     /**
      * @description Server/Client socket configurations
@@ -78,8 +75,7 @@ public class Constants {
      */
     public static final String ORDER_VIEW_LIST = "ORDER_VIEW_LIST";
     public static final String ORDER_VIEW_STATUS_LIST = "ORDER_VIEW_STATUS_LIST";
-//    public static final String ORDER_UPDATE = "ORDER_UPDATE";
-//    public static final String ORDER_DELETE = "ORDER_DELETE";
+    public static final String ORDER_UPDATE_STATUS = "ORDER_UPDATE_STATUS";
 
     /**
      * @description Choices
@@ -88,7 +84,6 @@ public class Constants {
     public static final String VIEW_TICKETS_STATUSES = "VIEW_TICKETS_STATUSES";
     public static final String AVAILABLE_TICKETS = "Tickets disponibili:";
     public static final String ON_CLOSING_CLIENT_MESSAGE = "Chiusura del client...";
-    public static final String WRONG_CHOICE = "Scelta non valida. Riprovare.";
 
     /**
      * @description Dipendente Client decisions

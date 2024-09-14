@@ -14,6 +14,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @description classe inerente al server MagazzinoServer per la gestione dei prodotti presenti nel magazzino
+ */
 public class MagazzinoServer {
 
     private ServerSocket serverSocket;
@@ -189,7 +192,7 @@ public class MagazzinoServer {
             try {
                 connection = Database.getInstance().getConnection();
 
-                String query = "DELETE FROM magazzino WHERE ID_PRODOTTO = ?";
+                String query = Queries.TBL_MAGAZZINO_DELETE_PRODUCT_QUERY;
                 statement = connection.prepareStatement(query);
                 statement.setString(1, productId);
 
@@ -211,8 +214,7 @@ public class MagazzinoServer {
 
             try {
                 connection = Database.getInstance().getConnection();
-
-                String query = "INSERT INTO magazzino (CODICE_MAGAZZINO, ID_PRODOTTO, QUANTITA_PRODOTTO, NOME_PRODOTTO, NOME_MAGAZZINO) VALUES (?, ?, ?, ?, ?)";
+                String query = Queries.TBL_MAGAZZINO_INSERT_NEW_PRODUCT_QUERY;
                 statement = connection.prepareStatement(query);
                 statement.setString(1, codiceMagazzino);
                 statement.setString(2, productId);
@@ -244,7 +246,7 @@ public class MagazzinoServer {
 
             try {
                 connection = Database.getInstance().getConnection();
-                String updateQuery = "UPDATE " + Constants.TBL_MAGAZZINO + " SET QUANTITA_PRODOTTO = ? WHERE ID_PRODOTTO = ?";
+                String updateQuery = Queries.TBL_MAGAZZINO_UPDATE_PRODUCT_QUANTITY_QUERY;
                 preparedStatement = connection.prepareStatement(updateQuery);
                 preparedStatement.setInt(1, newQuantity);
                 preparedStatement.setString(2, productId);

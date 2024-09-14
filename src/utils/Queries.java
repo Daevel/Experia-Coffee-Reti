@@ -64,6 +64,7 @@ public class Queries {
 
     public static final String TBL_TICKETING_UPDATE_TICKET_STATUS_BY_QUERY = "UPDATE " + Constants.TBL_TICKETING + " SET STATO = ? WHERE ID = ?";
 
+
     //! da controllare
     public static final String TBL_MAGAZZINO_INSERT_NEW_PRODUCT_QUERY = "INSERT INTO " + Constants.TBL_MAGAZZINO + " (CODICE_MAGAZZINO, ID_PRODOTTO, QUANTITA_PRODOTTO, NOME_PRODOTTO, NOME_MAGAZZINO) VALUES (?,?,?,?,?)";
 
@@ -103,6 +104,8 @@ public class Queries {
             "('FATTURA018', 1018, 118, 'Via Roma 15, Torino', 'non gestito'),\n" +
             "('FATTURA019', 1019, 119, 'Via della Libertà 22, Palermo', 'spedito'),\n" +
             "('FATTURA020', 1020, 120, 'Piazza della Signoria 5, Firenze', 'in lavorazione');\n";
+
+    public static final String TBL_ORDER_UPDATE_ORDER = "UPDATE " + Constants.TBL_ORDINE + " SET STATO_ORDINE = ? WHERE ID = ?";
 
     /**
      * @description Query di creazione tabella Magazzino

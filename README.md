@@ -4,7 +4,7 @@
   <img src="./assets/ExperiaLogo.png" alt="angular-logo"/>
   <br>
   <em>Experia coffee è un gestionale basato sulla vendita online di prodotti per il caffè
-    <br> creato con Java ed utilizza Sockets.</em>
+    <br> Realizzato interamente in Java, il progetto si basa sull'utilizzo delle socket.</em>
   <br>
 </p>
 
@@ -20,15 +20,24 @@
 Per eseguire il progetto correttamente, eseguire le seguenti istruzioni:
 
 ```bash
-//TO-DO Scrivere i passi da effettuare
+# Clona la repository del progetto
+git clone https://github.com/Daevel/Experia-Coffee-Reti.git
+
+# Naviga all'interno della directory di progetto
+cd Experia-Coffee-Reti
 ```
+
+* Aprire Intellij IDEA e recarsi nella sezione Services
+* In ordine avviare **Database Sync**
+* Avviare **Server Cluster**
+* Avviare **Avvio Clients**
+* Interagire con la console di **Produttore** o **Dipendente**
 
 ### Accortenze da seguire
 
 Per eseguire il progetto correttamente, sono necessarie le seguenti istruzioni:
-- Le porte 80, 3000 ed 3306 devono essere libere
-- bisogna avere a disposizione una connessione ad internet
-- bisogna aver installato correttamente Docker sulla propria macchina
+
+- Le porte 8080, 8081, 6000, ed 13000 devono essere libere
 
 <hr>
 

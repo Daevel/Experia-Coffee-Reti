@@ -10,13 +10,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @description classe inerente al server OrdineServer, per la gestione degli ordini da parte del produttore
+ */
 public class OrdineServer {
 
     private ServerSocket serverSocket;
@@ -82,6 +82,8 @@ public class OrdineServer {
                             case Constants.ORDER_VIEW_STATUS_LIST:
                                 prepareViewOrderStatusListRequest(output);
                                 break;
+                            case Constants.ORDER_UPDATE_STATUS:
+                                prepareUpdateOrderStatusRequest(input, output);
                             case Constants.EXIT:
                                 output.writeObject(Constants.SUCCESS);
                                 server.stop();
@@ -131,6 +133,22 @@ public class OrdineServer {
             }
         }
 
+        private void prepareUpdateOrderStatusRequest(ObjectInputStream input, ObjectOutputStream output) throws SQLException {
+            try {
+                Integer orderId = (Integer) input.readObject();
+                String orderStatus = (String) input.readObject();
+                boolean updated = updateOrderStatus(orderId, orderStatus);
+                if (updated) {
+                    output.writeObject(Constants.SUCCESS);
+                    Log.info("Stato ordine aggiornato con successo.");
+                } else {
+                    output.writeObject(Constants.FAILURE);
+                    Log.warning("Aggiornamento dell'ordine fallito.");
+                }
+            } catch (SQLException | ClassNotFoundException | RuntimeException | IOException e) {
+                Log.error(e.getMessage());
+            }
+        }
 
         private List<String> viewOrders() throws SQLException {
             Connection connection = null;
@@ -183,5 +201,38 @@ public class OrdineServer {
             }
             return orderStatus;
         }
+
+        /**
+         * @param orderNumber
+         * @param orderStatus
+         * @return true se l'operazione e' andata a buon fine, altrimenti false
+         * @throws SQLException
+         * @description aggiorna lo stato di un ordine
+         */
+        private boolean updateOrderStatus(Integer orderId, String orderStatus) throws SQLException {
+            Connection connection = null;
+            PreparedStatement preparedStatement = null;
+
+            try {
+                connection = Database.getInstance().getConnection();
+                preparedStatement = connection.prepareStatement(Queries.TBL_ORDER_UPDATE_ORDER);
+                preparedStatement.setString(1, orderStatus);
+                preparedStatement.setInt(2, orderId);
+
+
+                int rowsAffected = preparedStatement.executeUpdate();
+
+                return rowsAffected > 0;
+
+            } catch (SQLException e) {
+                Log.error(e.getMessage());
+            } finally {
+                Database.closeConnection(connection, preparedStatement, null);
+            }
+
+            return false;
+        }
+
+
     }
 }

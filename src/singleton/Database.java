@@ -7,6 +7,9 @@ import utils.Utils;
 
 import java.sql.*;
 
+/**
+ * @description classe da singolo avvio, atta per la creazione delle tabelle e degli inserimenti a db. I suoi metodi vengono usati dalle altre classi per effettuare connessioni.
+ */
 public class Database {
 
     private static Database instance;

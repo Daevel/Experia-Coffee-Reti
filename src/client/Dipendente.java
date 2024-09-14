@@ -6,36 +6,25 @@ import utils.Constants;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.Date;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * @description Classe riferente al Client Dipdente
+ */
 public class Dipendente {
 
-    private static final int DIPENDENTE_SERVER_PORT = Constants.DIPENDENTE_SERVER_PORT;// Inserisci l'host del server Ticketing
-    private static final int TICKETING_SERVER_PORT = Constants.TICKETING_SERVER_PORT; // Inserisci la porta del server Ticketing
+    private static final int TICKETING_SERVER_PORT = Constants.TICKETING_SERVER_PORT;
 
     public static void main(String[] args) {
-        new Thread(Dipendente::startServer).start();
-        new Thread(Dipendente::startTicketingClient).start();
+        startTicketingClient();
     }
-
-    private static void startServer() {
-        try (ServerSocket serverSocket = new ServerSocket(DIPENDENTE_SERVER_PORT)) {
-            Log.info("Server Dipendente in ascolto sulla porta " + DIPENDENTE_SERVER_PORT);
-
-            while (true) {
-                Socket clientSocket = serverSocket.accept();
-                Log.info("Connessione accettata da " + clientSocket.getInetAddress());
-                new Thread(new ClientHandler(clientSocket)).start();
-            }
-        } catch (IOException e) {
-            Log.error("Errore del server: " + e.getMessage());
-        }
-    }
-
+    
+    /**
+     * @description metodo always on per permettere all'utente di effettuare molteplici scelte, rispetto a quelle mostrate a terminale
+     */
     private static void startTicketingClient() {
         try (Socket socket = new Socket("localhost", TICKETING_SERVER_PORT);
              ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
@@ -81,6 +70,10 @@ public class Dipendente {
             this.clientSocket = clientSocket;
         }
 
+
+        /**
+         * @description metodo always on per permettere all'utente di effettuare molteplici scelte, rispetto a quelle mostrate a terminale
+         */
         @Override
         public void run() {
             try (

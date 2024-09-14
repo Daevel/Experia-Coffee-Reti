@@ -11,6 +11,10 @@ import java.net.Socket;
 import java.util.List;
 import java.util.Scanner;
 
+
+/**
+ * @description Classe riferente al Client Produttore
+ */
 public class Produttore {
 
     public static void main(String[] args) throws IOException {
@@ -46,6 +50,9 @@ public class Produttore {
                         prepareViewProductStatusRequest(output, input);
                         break;
                     case 7:
+                        prepareUpdateOrderStatusRequest(output, input, scanner);
+                        break;
+                    case 8:
                         prepareClosingClientAndServerRequest(output, input);
                         return;
                 }
@@ -68,8 +75,9 @@ public class Produttore {
         System.out.println("--- OPERAZIONI ORDINI ---");
         System.out.println("5 - Visualizza ordini");
         System.out.println("6 - Visualizza stato degli ordini");
+        System.out.println("7 - Aggiorna lo stato di un ordine");
         System.out.println("-------------------------");
-        System.out.println("7 - Esci");
+        System.out.println("8 - Esci");
 
         System.out.print("Scelta: ");
     }
@@ -257,6 +265,39 @@ public class Produttore {
             }
         } catch (IOException | ClassNotFoundException e) {
             Log.error("Errore durante la visualizzazione dei prodotti: " + e.getMessage());
+        }
+    }
+
+    /**
+     * @param output
+     * @param input
+     * @param scanner
+     * @description elabora la richiesta di aggiornamento della quantità di un prodotto
+     */
+    public static void prepareUpdateOrderStatusRequest(ObjectOutputStream output, ObjectInputStream input, Scanner scanner) {
+        try {
+            System.out.print("Inserisci il numero dell'ordine da aggiornare: ");
+            Integer orderID = scanner.nextInt();
+            scanner.nextLine();
+
+            System.out.print("Inserisci lo stato da aggiornare: ");
+            String orderStatus = scanner.nextLine();
+
+            // Invia al server la richiesta di aggiornamento
+            output.writeObject(Constants.ORDER_UPDATE_STATUS);
+            output.writeObject(orderID);
+            output.writeObject(orderStatus);
+
+            // Leggi la risposta dal server
+            String updateResponse = (String) input.readObject();
+
+            if (updateResponse.equals(Constants.SUCCESS)) {
+                Log.success(String.format("Stato dell'ordine %d è stato aggiornato con successo. Stato attuale: %s", orderID, orderStatus));
+            } else {
+                Log.error("Errore nell'aggiornamento dell'ordine.");
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            Log.error(e.getMessage());
         }
     }
 
