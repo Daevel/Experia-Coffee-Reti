@@ -140,6 +140,9 @@ public class Database {
             } else {
                 statement.executeUpdate(Queries.TBL_TICKETING_CREATE_QUERY_TABLE);
                 Log.success(String.format(Constants.SQL_CREATION_TABLE_SUCCESS, Constants.TBL_TICKETING));
+
+                statement.executeUpdate(Queries.TBL_TICKETING_INSERT_QUERY_TABLE);
+                Log.success(String.format(Constants.SQL_INSERTION_TABLE_SUCCESS, Constants.TBL_TICKETING));
             }
         } catch (SQLException e) {
             Log.error(String.format(Constants.SQL_CREATION_TABLE_ERROR, Constants.TBL_TICKETING));

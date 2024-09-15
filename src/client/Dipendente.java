@@ -21,12 +21,12 @@ public class Dipendente {
     public static void main(String[] args) {
         startTicketingClient();
     }
-    
+
     /**
      * @description metodo always on per permettere all'utente di effettuare molteplici scelte, rispetto a quelle mostrate a terminale
      */
     private static void startTicketingClient() {
-        try (Socket socket = new Socket("localhost", TICKETING_SERVER_PORT);
+        try (Socket socket = new Socket(Constants.HOSTNAME, TICKETING_SERVER_PORT);
              ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
              ObjectInputStream input = new ObjectInputStream(socket.getInputStream());
              Scanner scanner = new Scanner(System.in)) {
@@ -121,12 +121,15 @@ public class Dipendente {
      */
     public static void showChoices() {
         System.out.println(Constants.CHOOSE);
+        System.out.println("--- OPERAZIONI TICKETING ---");
         System.out.println(Constants.INSERT_NEW_TICKET);
         System.out.println(Constants.SHOW_TICKETS);
         System.out.println(Constants.SHOW_TICKETS_STATUSES);
         System.out.println(Constants.DELETE_TICKET);
         System.out.println(Constants.UPDATE_TICKET);
+        System.out.println("-------------------------");
         System.out.println(Constants.EXIT);
+        
         System.out.print(Constants.CHOICE);
     }
 

@@ -56,6 +56,30 @@ public class Queries {
             "    STATO VARCHAR(50) DEFAULT 'Non gestito'\n" +
             ");";
 
+
+    public static final String TBL_TICKETING_INSERT_QUERY_TABLE = "INSERT INTO Ticketing (TITOLO, DESCRIZIONE, GESTITO_DA, CREATO_DA, DATA_CREAZIONE, STATO)\n" +
+            "VALUES\n" +
+            "('Richiesta assistenza macchina caffè', 'La macchina non si accende.', 'm.rossi@experiacoffee.it', 'cliente1@gmail.com', '2024-09-01', 'Non gestito'),\n" +
+            "('Manutenzione urgente', 'Richiesta di manutenzione per macchina difettosa.', 'f.bianchi@experiacoffee.it', 'cliente2@yahoo.com', '2024-09-02', 'Gestito'),\n" +
+            "('Aggiornamento software', 'Errore durante aggiornamento del software.', 'l.verdi@experiacoffee.it', 'cliente3@hotmail.com', '2024-09-03', 'Non gestito'),\n" +
+            "('Ritiro prodotto', 'Il prodotto non è stato consegnato.', 'p.neri@experiacoffee.it', 'cliente4@libero.it', '2024-09-04', 'In lavorazione'),\n" +
+            "('Problema cialde', 'Le cialde non si incastrano nella macchina.', 'v.gialli@experiacoffee.it', 'cliente5@live.com', '2024-09-05', 'Non gestito'),\n" +
+            "('Supporto tecnico', 'Richiesta di supporto tecnico per nuovo modello.', 'a.ferri@experiacoffee.it', 'cliente6@outlook.com', '2024-09-06', 'Gestito'),\n" +
+            "('Richiesta di sostituzione', 'La macchina è difettosa e richiede sostituzione.', 'm.silveri@experiacoffee.it', 'cliente7@gmail.com', '2024-09-07', 'Non gestito'),\n" +
+            "('Assistenza capsule', 'Problema con la capsula che non viene perforata.', 'd.marroni@experiacoffee.it', 'cliente8@yahoo.com', '2024-09-08', 'In lavorazione'),\n" +
+            "('Surriscaldamento', 'La macchina si surriscalda dopo 10 minuti.', 'g.blanchi@experiacoffee.it', 'cliente9@libero.it', '2024-09-09', 'Non gestito'),\n" +
+            "('Problema di connessione', 'Impossibile connettere la macchina al Wi-Fi.', 'r.grigi@experiacoffee.it', 'cliente10@hotmail.com', '2024-09-10', 'Gestito'),\n" +
+            "('Riparazione urgente', 'La macchina si è bloccata completamente.', 's.brunetti@experiacoffee.it', 'cliente11@gmail.com', '2024-09-11', 'Non gestito'),\n" +
+            "('Errore nel programma di pulizia', 'Il programma di pulizia non parte.', 'n.lupi@experiacoffee.it', 'cliente12@yahoo.com', '2024-09-12', 'In lavorazione'),\n" +
+            "('Problema di rumorosità', 'La macchina è molto rumorosa durante l’uso.', 'b.volpi@experiacoffee.it', 'cliente13@libero.it', '2024-09-13', 'Non gestito'),\n" +
+            "('Richiesta di rimborso', 'Non sono soddisfatto del prodotto, richiedo rimborso.', 'e.guerrieri@experiacoffee.it', 'cliente14@live.com', '2024-09-14', 'Gestito'),\n" +
+            "('Macchina lenta', 'Richiesta di assistenza per lentezza di funzionamento.', 'm.tosti@experiacoffee.it', 'cliente15@outlook.com', '2024-09-15', 'Non gestito'),\n" +
+            "('Problema con erogazione', 'La macchina non eroga correttamente il caffè.', 'a.vitali@experiacoffee.it', 'cliente16@gmail.com', '2024-09-16', 'In lavorazione'),\n" +
+            "('Impossibile accendere la macchina', 'Richiesta urgente di assistenza per blocco.', 'v.rubini@experiacoffee.it', 'cliente17@yahoo.com', '2024-09-17', 'Non gestito'),\n" +
+            "('Caffè freddo', 'La macchina non riscalda l’acqua a sufficienza.', 'l.brunelli@experiacoffee.it', 'cliente18@hotmail.com', '2024-09-18', 'Gestito'),\n" +
+            "('Problema con il vapore', 'Non esce vapore per schiumare il latte.', 'g.marchi@experiacoffee.it', 'cliente19@gmail.com', '2024-09-19', 'Non gestito'),\n" +
+            "('Manutenzione programmata', 'Richiesta di manutenzione programmata.', 'c.naldi@experiacoffee.it', 'cliente20@yahoo.com', '2024-09-20', 'In lavorazione');\n";
+
     public static final String TBL_TICKETING_SELECT_STATUSES_QUERY = "SELECT ID,STATO FROM Ticketing;";
 
     public static final String TBL_TICKETING_DELETE_TICKET_BY_ID_QUERY = "DELETE FROM" + Constants.TBL_TICKETING + " WHERE ID = ?";
@@ -64,8 +88,6 @@ public class Queries {
 
     public static final String TBL_TICKETING_UPDATE_TICKET_STATUS_BY_QUERY = "UPDATE " + Constants.TBL_TICKETING + " SET STATO = ? WHERE ID = ?";
 
-
-    //! da controllare
     public static final String TBL_MAGAZZINO_INSERT_NEW_PRODUCT_QUERY = "INSERT INTO " + Constants.TBL_MAGAZZINO + " (CODICE_MAGAZZINO, ID_PRODOTTO, QUANTITA_PRODOTTO, NOME_PRODOTTO, NOME_MAGAZZINO) VALUES (?,?,?,?,?)";
 
     public static final String TBL_MAGAZZINO_UPDATE_PRODUCT_QUANTITY_QUERY = "UPDATE " + Constants.TBL_MAGAZZINO + " SET QUANTITA_PRODOTTO = ? WHERE ID_PRODOTTO = ?";
