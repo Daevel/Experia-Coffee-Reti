@@ -39,6 +39,10 @@ Per eseguire il progetto correttamente, sono necessarie le seguenti istruzioni:
 
 - Le porte 8080, 8081, 6000, ed 13000 devono essere libere
 
+### Documentazione
+
+La relazione e' disponibile accedendo nella cartella **docs** del progetto.
+
 <hr>
 
 Autore : Avitabile Luigi 0124002627
